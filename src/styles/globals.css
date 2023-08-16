@@ -4,7 +4,4 @@
 
 body {
   @apply bg-[conic-gradient(at_bottom_right,_var(--tw-gradient-stops))] from-blue-700 via-blue-800 to-gray-900 text-slate-100;
-
-  width: 100%;
-  height: 100vh;
 }
