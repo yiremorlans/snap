@@ -1,19 +1,61 @@
 import Head from "next/head";
+import { api } from "~/utils/api";
+import { appRouter } from "~/server/api/root";
+import  superjson  from "superjson";
+import { createServerSideHelpers } from "@trpc/react-query/server";
+import { prisma } from "~/server/db";
+import type { GetStaticProps, NextPage } from "next";
 
-export default function ProfilePage() {
+
+const ProfilePage: NextPage<{username: string}> = ({ username }) => {
+
+  const { data, isLoading } = api.profile.getUserByUsername.useQuery({
+    username,
+  });
+  if (!data) return <div>404</div>
 
   return (
     <>
       <Head>
-        <title>Snap</title>
-        <meta name="description" content="Snap is a fun visitor snap book page" />
-        <link rel="icon" href="/favicon.ico" />
+        <title>{data.username}</title>
       </Head>
-
       <main className="flex justify-center h-screen">
-          <h3>Profile</h3>
+          <h3>{data.username}</h3>
       </main>
     </>
   );
+};
+
+export const getStaticProps: GetStaticProps = async (context) => {
+
+  const ssg = createServerSideHelpers({
+    router: appRouter,
+    ctx: { prisma, userId: null},
+    transformer: superjson,
+  })
+
+  const slug =  context.params?.slug;
+
+  if (typeof slug !== "string") throw new Error("slug must be a string");
+
+  const username = slug.replace("@", "");
+
+  await ssg.profile.getUserByUsername.prefetch({ username });
+
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+      username,
+    },
+  }
+};
+
+
+export const getStaticPaths = () => {
+  return {
+    paths: [],
+    fallback: "blocking",
+  };
 }
 
+export default ProfilePage

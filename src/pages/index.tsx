@@ -126,24 +126,15 @@ export default function Home() {
   if (!userLoaded) return <div />;
 
   return (
-    <>
-      <Head>
-        <title>Snap</title>
-        <meta name="description" content="Snap is a fun visitor snap book page" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
       <main className="flex justify-center h-screen">
         <div className="w-full border-x border-indigo-800 md:max-w-2xl ">
           <div className="flex border-b border-indigo-800 p-4 ">
             {!isSignedIn && <div className="flex justify-center"><SignInButton /></div>}
             {isSignedIn && <CreatePostWizard />}
           </div>
-
           <Feed />
         </div>     
       </main>
-    </>
   );
 }
 
