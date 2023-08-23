@@ -9,6 +9,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { LoadingSpinner } from "~/components/loading";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
+import { PageLayout } from "~/components/layout";
 
 dayjs.extend(relativeTime);
 
@@ -125,16 +126,18 @@ export default function Home() {
   // Return empty div if BOTH aren't loaded
   if (!userLoaded) return <div />;
 
-  return (
-      <main className="flex justify-center h-screen">
-        <div className="w-full border-x border-indigo-800 md:max-w-2xl ">
-          <div className="flex border-b border-indigo-800 p-4 ">
-            {!isSignedIn && <div className="flex justify-center"><SignInButton /></div>}
-            {isSignedIn && <CreatePostWizard />}
-          </div>
-          <Feed />
-        </div>     
-      </main>
+  return ( 
+    <PageLayout>
+      <div className="flex border-b border-indigo-800 p-4">
+        {!isSignedIn && (
+           <div className="flex justify-center">
+              <SignInButton />
+            </div>
+          )}
+          {isSignedIn && <CreatePostWizard />}
+      </div>
+      <Feed />
+    </PageLayout>
   );
 }
 
